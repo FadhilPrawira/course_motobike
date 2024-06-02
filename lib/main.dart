@@ -1,9 +1,21 @@
 import 'package:d_session/d_session.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'firebase_options.dart';
-import 'package:flutter/material.dart';
+import 'models/bike.dart';
+import 'pages/booking_page.dart';
+import 'pages/chatting_page.dart';
+import 'pages/checkout_page.dart';
+import 'pages/detail_page.dart';
+import 'pages/discover_page.dart';
+import 'pages/pin_page.dart';
+import 'pages/signin_page.dart';
+import 'pages/signup_page.dart';
+import 'pages/splash_screen.dart';
+import 'pages/success_booking_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,11 +46,60 @@ class MainApp extends StatelessWidget {
             return const CircularProgressIndicator();
           }
           if (snapshot.data == null) {
-            return const Scaffold();
+            return const SplashScreen();
           }
-          return const Scaffold();
+          return const DiscoverPage();
         },
       ),
+      routes: {
+        '/discover': (context) => const DiscoverPage(),
+        '/signup': (context) => const SignupPage(),
+        '/signin': (context) => const SigninPage(),
+        '/detail': (context) {
+          String bikeId = ModalRoute.of(context)!.settings.arguments as String;
+          return DetailPage(
+            bikeId: bikeId,
+          );
+        },
+        '/booking': (context) {
+          Bike bike = ModalRoute.of(context)!.settings.arguments as Bike;
+          return BookingPage(
+            bike: bike,
+          );
+        },
+        '/checkout': (context) {
+          Map data = ModalRoute.of(context)!.settings.arguments as Map;
+          Bike bike = data['bike'];
+          String startDate = data['startDate'];
+          String endDate = data['endDate'];
+          return CheckoutPage(
+            bike: bike,
+            startDate: startDate,
+            endDate: endDate,
+          );
+        },
+        '/pin': (context) {
+          Bike bike = ModalRoute.of(context)!.settings.arguments as Bike;
+          return PinPage(
+            bike: bike,
+          );
+        },
+        '/success-booking': (context) {
+          Bike bike = ModalRoute.of(context)!.settings.arguments as Bike;
+          return SuccessBookingPage(
+            bike: bike,
+          );
+        },
+        '/chatting': (context) {
+          Map data = ModalRoute.of(context)!.settings.arguments as Map;
+          String uid = data['uid'];
+          String userName = data['userName'];
+          return ChattingPage(
+            uid: uid,
+            userName: userName,
+          );
+        },
+      },
     );
   }
 }
